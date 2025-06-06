@@ -1,0 +1,7 @@
+:concurrency: 2
+production:
+  :concurrency: 10
+:queues:
+  - ["voucher_que", 1]
+  - default
+  - low

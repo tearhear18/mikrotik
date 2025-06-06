@@ -1,0 +1,77 @@
+<%= render 'shared/header'%>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-row justify-content-between">
+                <h3>Stations</h3>
+                <div>
+                    <%= link_to new_agent_path, class: "btn btn-primary btn-sm" do %>
+                        Add Station
+                    <% end %>
+                    <%= link_to update_sales_agents_path, class: "btn btn-secondary btn-sm" do %>
+                        Update Sales
+                    <% end %>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <th>ID</th>
+                    <th>Server</th>
+                    <th>Name</th>
+                    <th>Prefix</th>
+                    <th>Active</th>
+                    <th>Vouchers</th>
+                    <th>Sold</th>
+                    <th>Date Created</th>
+                    <th>Sales</th>
+                    <th>Collectibles</th>
+                    <th>Less 30%</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    <% 
+                        @total_collectible = 0
+                        @total_sales = 0
+                        @net_sales = 0
+                    %>
+                    <%@agents.each_with_index do |agent, index|%>
+                        <% 
+                            @total_collectible += agent.estimated_collectible 
+                            @total_sales += agent.actual_sales
+                            @net_sales += agent.estimated_collectible - (agent.estimated_collectible * 0.30)
+                        %>
+                        <tr>
+                            <td><%=agent.id%></td>
+                            <td><%=agent.server%></td>
+                            <td><%=link_to  agent.name, agent%></td>
+                            <td><%=agent.prefix%></td>
+                            <td><%=number_with_delimiter(agent.vouchers.active_count)%></td>
+                            <td><%=number_with_delimiter(agent.vouchers.count)%></td>
+                            <td><%=number_with_delimiter(agent.vouchers.expired.count)%></td>
+                            <td><%=agent.created_at.in_time_zone('Asia/Manila').to_formatted_s(:long)%></td>
+                            <td><%=number_to_currency(agent.actual_sales, unit:'₱ ',separator: ".", delimiter: ",")%></td>
+                            <td>
+                                <%=number_to_currency(agent.estimated_collectible, unit:'₱ ',separator: ".", delimiter: ",") %>
+                            </td>
+                            <td>
+                                <%=number_to_currency(agent.estimated_collectible - (agent.estimated_collectible * 0.30), unit:'₱ ',separator: ".", delimiter: ",") %>
+                            </td>
+                            <td>
+                                <%= link_to agent_sales_collected_path(agent), class: "btn btn-secondary btn-sm" do %>
+                                    Collected
+                                <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                    <tr>
+                        <td colspan="8">Total</td>
+                        <td><%=number_to_currency(@total_sales , unit:'₱ ')%></td>
+                        <td><%=number_to_currency(@total_collectible, unit: '₱ ')%></td>
+                        <td><%=number_to_currency(@net_sales, unit: '₱ ')%></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

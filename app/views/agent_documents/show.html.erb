@@ -1,0 +1,52 @@
+<%= render 'shared/header'%>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <h3>Stations::<%= @agent.prefix%>::<%= @agent.name%></h3>
+        </div>
+        <div class="col-12">
+            <p>Time Stats <b><%=@document.name%></b></p>
+            <table class="table table-bordered">
+                <thead>
+                    <th>Time</th>
+                    <%@agent.time_config.each do |config|%>
+                        <th><%=config[0]%>h</th>
+                    <% end %>
+                </thead>
+                <tr>
+                    <td>Original Count</td>
+                    <%@vouchers_stats.each do |config|%>
+                        <td><%=config[1]%></td>
+                    <% end %>
+                </tr>
+                <tr>
+                    <td>Consumed</td>
+                    <%@vouchers_expired.each do |config|%>
+                        <td><%=config[1]%></td>
+                    <% end %>
+                </tr>
+                <tr>
+                    <td><b>Remaining</b></td>
+                    <%@vouchers_available.each do |config|%>
+                        <td><b><%=config[1]%></b></td>
+                    <% end %>
+                </tr>
+            </table>
+        </div>
+        <div class="col-4">
+            <%@document.vouchers.available.where(limit_uptime: '2h').find_each do |v|%>
+              <%=v.code%> <br>
+            <% end %>
+        </div>
+        <div class="col-4">
+            <%@document.vouchers.available.where(limit_uptime: '4h').find_each do |v|%>
+              <%=v.code%>  <br>
+            <% end %>
+        </div>
+        <div class="col-4">
+            <%@document.vouchers.available.where(limit_uptime: '8h').find_each do |v|%>
+              <%=v.code%>  <br>
+            <% end %>
+        </div>
+    </div>
+</div>

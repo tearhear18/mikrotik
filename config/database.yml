@@ -1,0 +1,14 @@
+default: &default
+  adapter: mysql2
+  host: mtkdb
+  username: root
+  password: 123123
+
+development:
+  <<: *default
+  database: mikrotik_dev
+
+test:
+  <<: *default
+  database: mikrotik_test
+

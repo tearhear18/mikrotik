@@ -1,0 +1,99 @@
+<%= render 'shared/header'%>
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-12 mb-3">
+      <h3>Stations::<%= @agent.prefix%>::<%= @agent.name%></h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 mb-3">
+        <div class="row">
+            <div class="col-3">
+              <div class="card text-left card-mikrotik">
+                <div class="card-body">
+                  <h4 class="card-title">Total Sales</h4>
+                  <p class="card-text"><%=number_to_currency(@agent.login_vouchers.sum(:price), unit:'₱ ',separator: ".", delimiter: ",") || 0%></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-2">
+                <div class="card text-left card-mikrotik">
+                  <div class="card-body">
+                    <h4 class="card-title">Est Collectible</h4>
+                    <p class="card-text"><%=number_to_currency(@agent.login_vouchers.not_collected.sum(:price), unit:'₱ ',separator: ".", delimiter: ",") %></p>
+                  </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="card text-left card-mikrotik">
+                  <div class="card-body">
+                    <h4 class="card-title">Vouchers</h4>
+                    <p class="card-text"><%=number_with_delimiter(@vouchers.count)%></p>
+                  </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="card text-left card-mikrotik">
+                  <div class="card-body">
+                    <h4 class="card-title">Vouchers Sold</h4>
+                    <p class="card-text"><%=number_with_delimiter(@vouchers.expired.count)%></p>
+                  </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card text-left card-mikrotik">
+                  <div class="card-body">
+                    <h4 class="card-title">Vouchers Available</h4>
+                    <p class="card-text"><%=number_with_delimiter(@vouchers.available.count)%></p>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <h5>Daily Sales</h5>
+      <%= column_chart @daily_sales, library: { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } } %>
+    </div>
+    <div class="col-12">
+      <div class="d-flex flex-row justify-content-between mb-2">
+        <h5>Code Generator</h5>
+        <%= link_to agent_code_generator_path(@agent)  do %>
+            <button class="btn btn-primary btn-sm">Code Generator</button>
+        <% end %>
+      </div>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <th>ID</th>
+          <th>Code Generated</th>
+          <th>Multiplier</th>
+          <th>Active</th>
+          <th>Sold</th>
+          <th>Sale Amount</th>
+          <th>Time Generated</th>
+        </thead>
+        <tbody>
+            <%@agent.agent_documents.order(id: :desc).each do |doc|%>
+                <tr>
+                    <td><%=doc.id%></td>
+                    <td><%=doc.name%></td>
+                    <td><%=doc.multiplier%></td>
+                    <td><%=doc.vouchers.active_count%></td>
+                    <td><%=doc.vouchers.expired.count%></td>
+                    <td><%=doc.sale_amount%></td>
+                    <td><%=doc.created_at.in_time_zone('Asia/Manila').to_formatted_s(:long)%></td>
+                    <td>
+                      <%= link_to 'PDF', agent_agent_document_path(@agent,doc, :format => 'pdf')%>
+                      <%= link_to 'View', agent_agent_document_path(@agent,doc, :format => 'html')%>
+                      <% if doc.vouchers.active_count > 0%>
+                        <%= link_to 'Remove Vouchers', agent_agent_document_path(@agent,doc, :format => 'html'), method: :delete, data: { confirm: "Are you sure?" }%>
+                      <% end %>
+                    </td>
+                </tr>
+            <% end %>
+        <tbody>
+      </table>
+    </div>
+  </div>
+</div>

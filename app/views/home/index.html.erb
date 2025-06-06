@@ -1,0 +1,63 @@
+<%= render 'shared/header'%>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <div class="row">
+                <div class="col-2">
+                    <div class="card text-left card-mikrotik">
+                        <div class="card-body">
+                            <h4 class="card-title">Total Sales</h4>
+                            <p class="card-text">₱ <%=number_with_delimiter LoginVoucher.sum(:price)%></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <%= link_to agents_path  do %>
+                        <div class="card text-left card-mikrotik">
+                        <div class="card-body">
+                            <h4 class="card-title">Stations</h4>
+                            <p class="card-text"><%=number_with_delimiter Agent.count%></p>
+                        </div>
+                        </div>
+                    <% end %>
+                </div>
+                <div class="col-2">
+                    <div class="card text-left card-mikrotik">
+                    <div class="card-body">
+                        <h4 class="card-title">Vouchers</h4>
+                        <p class="card-text"><%=number_with_delimiter(@vouchers.count)%></p>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card text-left card-mikrotik">
+                    <div class="card-body">
+                        <h4 class="card-title">Vouchers Used</h4>
+                        <p class="card-text"><%=number_with_delimiter(@vouchers.expired.count)%></p>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card text-left card-mikrotik">
+                    <div class="card-body">
+                        <h4 class="card-title">Vouchers Available</h4>
+                        <p class="card-text"><%=number_with_delimiter(@vouchers.available.count)%></p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h5>Per Agent Daily Sales</h5>
+            <%= column_chart @per_agent_daily_sales.map { |date, agents| { name: date, data: agents } } %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h5>Over All Daily Sales</h5>
+            <%= column_chart @over_all_daily_sales, library: { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } } %>
+        </div>
+    </div>
+</div>

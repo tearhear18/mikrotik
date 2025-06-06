@@ -1,0 +1,22 @@
+<%= render 'shared/header'%>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="empty-wrapper d-flex justify-content-center align-items-center">
+                <div class="text-center">
+                    <%=link_to routers_path do %>
+                        <div class="add-router-btn mx-auto d-flex align-items-center justify-content-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </div>
+                    <% end %>
+                    <p style="font-size: 1.5em" class="bluey-grey mt-3">Looks like you do not have any mikrotik devices </p>
+                 </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<%= content_tag :div, nil, class: 'modal fade', id: "form-modal-group" %>

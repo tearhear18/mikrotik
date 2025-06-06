@@ -1,0 +1,50 @@
+volumes:
+  clickhouse-server: {}
+  clickhouse-server-log: {}
+  mysql-mtkdata:
+    driver: local
+services:
+  redis:
+    image: redis:7.0.4
+    platform: linux/amd64
+  mtkdb:
+    image: mysql:5.7
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123123
+    volumes:
+      - "mysql-mtkdata:/var/lib/mysql"
+    ports:
+      - "3310:3306"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    command: >
+      sh -c "rails db:create &&
+             rails s -b 0.0.0.0"
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - .:/mtk
+    ports:
+      - "8000:3000"
+    depends_on:
+      - mtkdb
+      - redis
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    command: >
+      sh -c "bundle exec sidekiq -C config/sidekiq.yml"
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - .:/mtk
+    depends_on:
+      - mtkdb
+      - redis
